@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4efe5">
+  <title>Mi espacio para escribir</title>
+  <style>
+    :root { color-scheme: light; --ink:#29251f; --muted:#716b61; --paper:#fffdf8; --line:#e7dfd2; --accent:#70553d; }
+    * { box-sizing:border-box }
+    body { margin:0; min-height:100vh; padding:32px 18px; display:grid; place-items:center; background:#f4efe5; color:var(--ink); font-family:Georgia,"Times New Roman",serif }
+    main { width:min(820px,100%); padding:clamp(22px,5vw,48px); background:var(--paper); border:1px solid var(--line); border-radius:18px; box-shadow:0 14px 40px #33271912 }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,6vw,3.2rem); font-weight:500; letter-spacing:-.03em }
+    p { color:var(--muted); line-height:1.6 }
+    label { display:block; margin:28px 0 10px; font-size:1.1rem }
+    textarea { display:block; width:100%; min-height:48vh; padding:18px; resize:vertical; border:1px solid var(--line); border-radius:12px; background:#fff; color:var(--ink); font:1.05rem/1.7 Georgia,"Times New Roman",serif; outline-color:var(--accent) }
+    .bottom { display:flex; justify-content:space-between; align-items:center; gap:14px; margin-top:14px; flex-wrap:wrap }
+    #status { color:var(--muted); font: .92rem/1.4 system-ui,sans-serif }
+    button { border:1px solid var(--line); border-radius:9px; padding:10px 14px; background:#fff; color:var(--ink); cursor:pointer; font: .95rem system-ui,sans-serif }
+    button:hover { border-color:var(--accent) }
+    .note { margin:22px 0 0; font: .85rem/1.5 system-ui,sans-serif }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Mi espacio para escribir</h1>
+    <p>Dejá acá tus ideas, notas o lo que quieras escribir.</p>
+    <label for="texto">Tu espacio</label>
+    <textarea id="texto" placeholder="Empezá a escribir acá…" spellcheck="true"></textarea>
+    <div class="bottom">
+      <span id="status" aria-live="polite">Tus cambios se guardan automáticamente en este navegador.</span>
+      <button id="borrar" type="button">Borrar texto</button>
+    </div>
+    <p class="note">Lo que escribas queda guardado solo en este dispositivo y navegador; no se publica en GitHub ni se comparte.</p>
+  </main>
+  <script>
+    const box = document.getElementById('texto');
+    const status = document.getElementById('status');
+    const key = 'fabsito-espacio-para-escribir';
+    try { box.value = localStorage.getItem(key) || ''; }
+    catch { status.textContent = 'El guardado local no está disponible en este navegador.'; }
+    box.addEventListener('input', () => {
+      try { localStorage.setItem(key, box.value); status.textContent = 'Guardado en este navegador.'; }
+      catch { status.textContent = 'No se pudo guardar en este navegador.'; }
+    });
+    document.getElementById('borrar').addEventListener('click', () => {
+      if (!box.value || confirm('¿Querés borrar todo lo que escribiste?')) {
+        box.value = '';
+        try { localStorage.removeItem(key); } catch {}
+        status.textContent = 'Texto borrado.';
+        box.focus();
+      }
+    });
+  </script>
+</body>
+</html>
